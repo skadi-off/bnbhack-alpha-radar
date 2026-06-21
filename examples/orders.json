@@ -1,0 +1,28 @@
+[
+  {
+    "_comment": "market buy + условные TP/SL/trailing — откроет позицию, движок будет следить",
+    "wallet": "body1", "side": "buy", "type": "market",
+    "token": "0x55d398326f99059fF775485246999027B3197955",
+    "amount": 0.01, "take_profit_pct": 0.20, "stop_loss_pct": 0.10, "trailing_pct": 0.08,
+    "client_order_id": "demo-1", "tag": "brain"
+  },
+  {
+    "_comment": "limit buy — исполнится когда цена (BNB за токен) опустится до trigger_price",
+    "wallet": "body2", "side": "buy", "type": "limit",
+    "token": "0x55d398326f99059fF775485246999027B3197955",
+    "amount": 0.02, "trigger_price": 0.0016, "client_order_id": "demo-2", "tag": "brain"
+  },
+  {
+    "_comment": "limit sell — исполнится когда цена поднимется до trigger_price",
+    "wallet": "body2", "side": "sell", "type": "limit",
+    "token": "0x55d398326f99059fF775485246999027B3197955",
+    "amount": 5.0, "trigger_price": 0.0019, "client_order_id": "demo-3", "tag": "brain"
+  },
+  {
+    "_comment": "market sell всего баланса",
+    "wallet": "body1", "side": "sell", "type": "market",
+    "token": "0x55d398326f99059fF775485246999027B3197955",
+    "sell_all": true, "client_order_id": "demo-4", "tag": "brain"
+  },
+  { "_comment": "отмена pending-ордера по client_order_id", "cancel": "demo-2" }
+]

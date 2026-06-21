@@ -1,0 +1,3 @@
+web3>=6.15
+PyYAML>=6.0
+# dev (тесты): pip install pytest

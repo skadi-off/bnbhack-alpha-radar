@@ -1,0 +1,79 @@
+# ── BSC mainnet ──────────────────────────────────────────────────────────────
+# rpc_urls: список для ротации. [0] = primary, через него уходят tx.
+# Для защиты от сэндвича primary лучше private/MEV-RPC (PancakeSwap MEV Guard / 48Club).
+rpc_urls:
+  - "https://bscrpc.pancakeswap.finance"     # PancakeSwap MEV Guard (private, бесплатно)
+  - "https://rpc.48.club"                     # 48Club private
+  - "https://bsc-dataseed.binance.org"        # публичный фоллбэк для read-вызовов
+chain_id: 56
+router: "0x10ED43C718714eb63d5aA57B78B54704E256024E"   # PancakeSwap V2 Router (подтверждён)
+wbnb:   "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"   # WBNB (подтверждён)
+usdt:   "0x55d398326f99059fF775485246999027B3197955"   # USDT BSC, 18 decimals (промежут. хоп)
+
+# ── twak (опционально; по умолчанию исполняем прямым путём) ───────────────────
+twak_bin: "twak"
+twak_password_env: "TWAK_WALLET_PASSWORD"
+
+# ── газ (ЧИСЛА — плейсхолдеры, уточнить под бой) ──────────────────────────────
+gas_price_gwei: null        # null = авто (oracle * gas_multiplier, но не ниже floor)
+gas_multiplier: 1.15        # запас к oracle-цене
+gas_floor_gwei: 0.05        # валидаторский минимум BSC
+gas_limit_fallback: 350000  # если estimate_gas не удался
+bnb_gas_reserve: 0.003      # не тратить BNB ниже этого остатка (на газ выходов)
+
+# ── ГЛОБАЛЬНЫЕ ДЕФОЛТЫ СТРАТЕГИИ (ЧИСЛА — плейсхолдеры) ───────────────────────
+# Наследуются телом, если в его strategy: нет соответствующего ключа.
+default_slippage_pct: 0.01  # 1% по умолчанию (0.01 = 1%)
+slippage_by_token: {}       # перебить пер-токен: { "0xТОКЕН": 0.05 }
+take_profit_pct: null       # дефолтный TP, если ордер не задал
+stop_loss_pct: null         # дефолтный SL
+trailing_pct: null          # дефолтный trailing-стоп
+
+# ── исполнение ────────────────────────────────────────────────────────────────
+deadline_secs: 120
+receipt_timeout_secs: 180
+approve_mode: "exact"       # exact | infinite
+poll_secs: 15               # период тика демона/монитора
+
+# ── гейты конкурса (ЧИСЛА — вставить по правилам BNB Hack) ────────────────────
+allowed_tokens: []          # вайтлист 149 токенов; пусто = без ограничения
+max_drawdown_pct: null      # circuit-breaker, напр. 0.30 (пример порога дисквала)
+min_trades_per_day: null    # напр. 1
+
+# ── агрегатор (опц.) ──────────────────────────────────────────────────────────
+aggregator: null            # null | "openocean"
+
+# ── стейт ─────────────────────────────────────────────────────────────────────
+state_db: "state.db"
+
+# ── 4 ТЕЛА = 4 СЕКЦИИ ─────────────────────────────────────────────────────────
+# Скелет один. У каждого тела свой strategy: (числа/мозг), переопределяет глоб.дефолты.
+# Переопределяемо: default_slippage_pct, slippage_by_token, bnb_gas_reserve,
+# take_profit_pct, stop_loss_pct, trailing_pct, allowed_tokens, max_drawdown_pct,
+# min_trades_per_day. strategy: {} = как глобальные дефолты.
+# private_key: "0x..."(inline) | "env:NAME" | "keystore:PATH"(+ env TWAK_KEYSTORE_PASSWORD)
+wallets:
+  - name: body1
+    address: "0x0000000000000000000000000000000000000000"
+    private_key: "env:BODY1_PK"
+    strategy: {}                       # как дефолты
+
+  - name: body2                        # пример тела со своей стратой
+    address: "0x0000000000000000000000000000000000000000"
+    private_key: "env:BODY2_PK"
+    strategy:
+      default_slippage_pct: 0.05       # агрессивнее по слиппеджу
+      take_profit_pct: 0.30
+      stop_loss_pct: 0.12
+      max_drawdown_pct: 0.25
+      allowed_tokens: []               # свой подсписок токенов (пусто = как глоб.)
+
+  - name: body3
+    address: "0x0000000000000000000000000000000000000000"
+    private_key: "env:BODY3_PK"
+    strategy: {}
+
+  - name: body4
+    address: "0x0000000000000000000000000000000000000000"
+    private_key: "env:BODY4_PK"
+    strategy: {}

@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+config.yaml
+state.db
+state.db-wal
+state.db-shm
+.env
+.twak-*/
+orders_inbox/
+results/
+registration.json
+keystores/
+config_test.yaml
+test_wallet.json
+state_test.db
+state_test.db-*

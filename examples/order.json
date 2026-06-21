@@ -1,0 +1,10 @@
+{
+  "wallet": "body1",
+  "side": "buy",
+  "token": "0x55d398326f99059fF775485246999027B3197955",
+  "amount": 0.01,
+  "take_profit_pct": 0.20,
+  "stop_loss_pct": 0.10,
+  "slippage_pct": 0.01,
+  "tag": "demo-from-brain"
+}
